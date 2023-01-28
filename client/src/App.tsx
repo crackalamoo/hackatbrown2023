@@ -1,6 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import "./App.css";
 
+fetch("http://localhost:5000/secret")
+.then(res => res.json())
+.then(data => console.log(data));
+
 function App() {
   const videoRef = useRef<HTMLVideoElement>(null);
 
