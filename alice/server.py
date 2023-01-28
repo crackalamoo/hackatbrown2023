@@ -1,14 +1,24 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import cv2 as cv
+from PIL import Image
+import base64
+import numpy as np
+import io
 
 app = Flask(__name__, static_folder='../client')
 cors = CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000"]}})
 app.config['CORS_HEADERS'] = 'Content-Type'
 face_cascade = cv.CascadeClassifier('haarcascade_frontalface_alt.xml')
 
+def stringToImage(base64_string):
+    data = base64.b64decode(str(base64_string))
+    img = Image.open(io.BytesIO(data))
+    return cv.cvtColor(np.array(img), cv.COLOR_BGR2RGB)
+
 def checkWebcam(webcam_data):
-    grayscale_image = cv.cvtColor(webcam_data, cv.COLOR_BGR2GRAY)
+    original_image = stringToImage(webcam_data)
+    grayscale_image = cv.cvtColor(original_image, cv.COLOR_BGR2GRAY)
     detected_faces = face_cascade.detectMultiScale(grayscale_image)
     return len(detected_faces) == 1
 
