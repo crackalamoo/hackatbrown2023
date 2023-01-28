@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import "./App.css";
 
-fetch("http://localhost:5000/secret")
+fetch("http://localhost:8000/hello")
 .then(res => res.json())
 .then(data => console.log(data));
 
