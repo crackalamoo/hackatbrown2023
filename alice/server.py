@@ -9,16 +9,15 @@ import io
 app = Flask(__name__, static_folder='../client')
 cors = CORS(app, resources={r"/api/*": {"origins": ["http://localhost:3000"]}})
 app.config['CORS_HEADERS'] = 'Content-Type'
-face_cascade = cv.CascadeClassifier('haarcascade_frontalface_alt.xml')
+face_cascade = cv.CascadeClassifier(cv.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 def stringToImage(base64_string):
     data = base64.b64decode(str(base64_string))
-    img = Image.open(io.BytesIO(data))
-    return cv.cvtColor(np.array(img), cv.COLOR_BGR2RGB)
+    return Image.open(io.BytesIO(data))
 
 def checkWebcam(webcam_data):
     original_image = stringToImage(webcam_data)
-    grayscale_image = cv.cvtColor(original_image, cv.COLOR_BGR2GRAY)
+    grayscale_image = cv.cvtColor(np.array(original_image), cv.COLOR_BGR2GRAY)
     detected_faces = face_cascade.detectMultiScale(grayscale_image)
     return len(detected_faces) == 1
 
