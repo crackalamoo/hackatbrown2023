@@ -6,7 +6,7 @@ import numpy as np
 import io
 
 app = Flask(__name__)
-face_cascade = cv.CascadeClassifier('haarcascade_frontalface_alt.xml')
+face_cascade = cv.CascadeClassifier(cv.data.haarcascades + 'haarcascade_frontalface_alt.xml')
 
 def stringToImage(base64_string):
     data = base64.b64decode(str(base64_string))
