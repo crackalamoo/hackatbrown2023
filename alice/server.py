@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, render_template
 import cv2 as cv
+from skimage.metrics import structural_similarity
 from PIL import Image
 import base64
 import numpy as np
@@ -20,6 +21,18 @@ def checkWebcam(webcam_data):
     detected_faces = face_cascade.detectMultiScale(grayscale_image)
     return len(detected_faces) == 1
 
+def verifySimilarity(images_lst):
+    webcam_images = map(stringToImage, images_lst)
+    grayscale_images = []
+    for img in webcam_images:
+        grayscale_images.append(cv.cvtColor(np.array(img), cv.COLOR_BGR2GRAY))
+    pairs = [(a, b) for idx, a in enumerate(grayscale_images) for b in grayscale_images[idx + 1:]]
+    for pair in pairs:
+        score = structural_similarity(pair[0], pair[1])
+        print(score)
+        if score < 0.7: return False
+    return True
+
 @app.route('/hello')
 def hello():
     response = jsonify({'message': 'Hello, World!'})
@@ -30,8 +43,11 @@ def hello():
 def secret():
     print("hi")
     json_string = '['+str(request.data)[2:-1]+']'
+    print(json_string)
     json_data = json.loads(json_string)[0]
     webcam_data = json_data['image0']
+    print(webcam_data)
+    #print(webcam_data)
     try:
         response = verify(webcam_data, {"secret": "You are a verified human!"})
         response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
@@ -42,7 +58,7 @@ def secret():
     return response
 
 def verify(webcam_data, secret):
-    webcam_data = webcam_data[webcam_data.rfind(',')+1:]
+    webcam_data = webcam_data[webcam_data.rfind(',')+1:webcam_data.rfind('==')+2]
     webcam_data = webcam_data.replace(' ', '+')
     print(webcam_data)
     if checkWebcam(webcam_data):
