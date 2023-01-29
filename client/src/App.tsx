@@ -7,10 +7,20 @@ fetch("http://localhost:8000/hello")
 .then(res => res.json())
 .then(data => console.log(data));
 
+interface AppData {
+  title: string,
+  message: string
+}
+
 function App() {
+  const getData = (data : AppData) => {
+    console.log(data);
+    console.log(data.title);
+  }
+
   return (
     <div>
-      <Biocaptcha />
+      <Biocaptcha onDataReceived={getData} />
     </div>
   );
 }
