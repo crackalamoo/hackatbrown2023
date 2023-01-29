@@ -9,7 +9,7 @@ const videoConstraints = {
   facingMode: "user",
 };
 
-var imagesCaptured = 0;
+var imagesCaptured: string[] = [];
 const NUM_IMAGES = 3;
 
 interface BiocaptchaProps {
@@ -24,16 +24,18 @@ export default function Biocaptcha(props: BiocaptchaProps) {
   const handleImageCapture = (imageSrc: string) => {
     console.log(imageSrc);
     setImg(imageSrc);
-    imagesCaptured++;
-    if (imagesCaptured == NUM_IMAGES) {
-      imagesCaptured = 0;
+    imagesCaptured.push(imageSrc);
+    if (imagesCaptured.length == NUM_IMAGES) {
       var url = props.sendDataUrl;
-      /* for (let i = 0; i < NUM_IMAGES; i++) {
-
-      } */
+      for (let i = 0; i < imagesCaptured.length; i++) {
+        url += i == 0 ? "?" : "&";
+        url += "image" + i + "=" + imagesCaptured[i];
+      }
+      imagesCaptured = [];
+      fetch(url).then(data => data.json()).then(data => props.onDataReceived(data));
+      
+      fetch('http://localhost:8000/hello').then(data => data.json()).then(data => console.log(data));
     }
-    //fetch(`http://localhost:8000/api/biocaptcha?image=${imageSrc}`)
-    //props.onDataReceived(imageSrc);
   };
 
   const capture = useCallback(() => {

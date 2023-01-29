@@ -25,10 +25,13 @@ def hello():
     return response
 
 @app.route('/secret')
-#@cross_origin(**api_cors_config)
-def secret(webcam_data):
-    response = verify(webcam_data, {"secret": "You are a verified human!"})
-    response.headers.add('Access-Control-Allow-Origin', '*')
+def secret():
+    webcam_data = request.args.get('image0')
+    #print(request.args.get('image0'))
+    #print(webcam_data)
+    #response = verify(webcam_data, {"secret": "You are a verified human!"})
+    response = jsonify({"secret": "You are a verified human!"})
+    response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
     return response
 
 def verify(webcam_data, secret):

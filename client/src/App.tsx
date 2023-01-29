@@ -20,7 +20,7 @@ function App() {
 
   return (
     <div>
-      <Biocaptcha onDataReceived={getData} />
+      <Biocaptcha sendDataUrl='http://localhost:8000/secret' onDataReceived={getData} />
     </div>
   );
 }
