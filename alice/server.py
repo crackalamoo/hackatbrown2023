@@ -49,22 +49,28 @@ def secret():
     print(webcam_data)
     #print(webcam_data)
     try:
-        response = verify(webcam_data, {"secret": "You are a verified human!"})
+        response = verify(webcam_data,
+            {   "title": "Congratulations! You Are Not a Robot!",
+                "message": "You are a verified human! Now you get to see the secret message. Here it is: \"I love Hack at Brown!\""},
+            {   "title": "Oh no! You are not a verified human!",
+                "message": "Since you are not verified, you can't see the secret message."})
         response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
     except Exception as e:
-        response = jsonify({"secret": "Server error: " + repr(e)})
+        response = jsonify({
+            "title": "Error",
+            "message": "Server error: " + repr(e)})
         response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
         response = response, 500
     return response
 
-def verify(webcam_data, secret):
-    webcam_data = webcam_data[webcam_data.rfind(',')+1:webcam_data.rfind('==')+2]
+def verify(webcam_data, secret, onRobot={}):
+    webcam_data = webcam_data[webcam_data.rfind(',')+1:]
     webcam_data = webcam_data.replace(' ', '+')
     print(webcam_data)
     if checkWebcam(webcam_data):
         return jsonify(secret)
     else:
-        return jsonify({})
+        return jsonify(onRobot)
 
 def verify_face(img):
   grayscale_image = cv.cvtColor(img, cv.COLOR_BGR2GRAY)

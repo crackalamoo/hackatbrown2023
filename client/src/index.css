@@ -12,3 +12,17 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+div.finalMsg p {
+  float: left;
+  width: 60%;
+}
+
+div.finalMsg svg {
+  float: right;
+  width: 30%;
+}
+
+div.finalMsg svg text {
+  font-size: 80px;
+}

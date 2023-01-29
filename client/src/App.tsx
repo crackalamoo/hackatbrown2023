@@ -9,6 +9,7 @@ import { Box } from "@mui/system";
 import { useState } from "react";
 import "./App.scss";
 import Biocaptcha from "./components/biocaptcha/Biocaptcha";
+import { RobotSvg, NoRobotSvg } from "./components/RobotSvg";
 
 interface AppData {
   title: string;
@@ -16,40 +17,58 @@ interface AppData {
 }
 
 function App() {
-  const [human, setHuman] = useState(false);
+  const [didCaptcha, setDidCaptcha] = useState(false);
+  const [serverData, setServerData] = useState({title: '', message: ''} as AppData);
 
   const getData = (data: AppData) => {
     console.log(data);
     console.log(data.title);
+    setDidCaptcha(true);
+    setServerData(data);
   };
 
+  const goHomepage = () => {
+    setDidCaptcha(false);
+  }
+
   const renderProtectedContent = () => {
-    if (human) {
+    if (didCaptcha) {
       return (
         <Paper className="content">
           <Typography variant="h4">
-            Congratulations! You Are Not a Robot!
+            {serverData.title}
           </Typography>
+          <div className="finalMsg"><Typography variant="body1">
+            {serverData.message}
+          </Typography>
+          {
+            serverData.title.indexOf("Not a Robot!") !== -1 ? <NoRobotSvg /> : <RobotSvg />
+          }
+          </div>
+          <br />
+
+          <Button variant="contained" onClick={goHomepage}>Click to try again</Button>
+          <br /><br />
 
           <Box style={{ marginTop: "1rem" }}>
             <Typography variant="h6">Why bioCAPTCHA?</Typography>
             <ul style={{ margin: 0 }}>
               <li>
                 <Typography variant="body1">
-                  According to Barracuda Networks, malicious bots make up 40% of
-                  internet traffic.
+                  According to Barracuda Networks, malicious bots make up <strong>40% of
+                  internet traffic</strong>.
                 </Typography>
               </li>
               <li>
                 <Typography variant="body1">
-                  Bot-detection services like reCAPTCHA are contantly battling
-                  hackers who circumvent verification systems.
+                  Bot-detection services like reCAPTCHA are <strong>contantly battling
+                  hackers</strong> who circumvent verification systems.
                 </Typography>
               </li>
               <li>
                 <Typography variant="body1">
                   Consequently, services like reCAPTCHA have traded increased
-                  security for frustrating user experiences.
+                  security for <strong>frustrating user experiences</strong>.
                 </Typography>
               </li>
             </ul>
@@ -87,10 +106,6 @@ function App() {
               </li>
             </ul>
           </Box>
-
-          <Typography variant="caption">
-            NOTE: Only humans can see this page!
-          </Typography>
         </Paper>
       );
     } else {
@@ -111,7 +126,7 @@ function App() {
       >
         <Toolbar>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Hack@Brown 2023
+            Hack@Brown 2023: bioCAPTCHA
           </Typography>
         </Toolbar>
       </AppBar>
