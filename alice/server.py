@@ -22,12 +22,15 @@ def checkWebcam(webcam_data):
     original_image = stringToImage(webcam_data)
     grayscale_image = cv.cvtColor(np.array(original_image), cv.COLOR_BGR2GRAY)
     detected_faces = face_cascade.detectMultiScale(grayscale_image)
+    detected_smiles = 0
     for (x, y, w, h) in detected_faces:
         cv.rectangle(np.array(original_image), (x, y), ((x + w), (y + h)), (255, 0, 0), 2)
         roi_gray = grayscale_image[y:y + h, x:x + w]
-        detected_smiles = smile_cascade.detectMultiScale(roi_gray, 1.5, 10)
+        detected_smiles += len(smile_cascade.detectMultiScale(roi_gray, 1.4, 14))
+        detected_smiles += len(smile_cascade.detectMultiScale(roi_gray, 1.6, 12))
+        detected_smiles += len(smile_cascade.detectMultiScale(roi_gray, 1.8, 10))
     if len(detected_faces) == 0: return False
-    return len(detected_faces) == 1 and len(detected_smiles) >= 1
+    return len(detected_faces) == 1 and detected_smiles >= 1
 
 def checkDatabase(webcam_data):
     with open("images.txt", "r") as file:
@@ -78,7 +81,7 @@ def secret():
     return response
 
 
-prompts = ["Please smile and show your face."]
+prompts = ["Please smile and show those pearly whites!"]
 @app.route('/prompt', methods=['GET'])
 def prompt():
     index = random.randint(0, len(prompts)-1)

@@ -121,7 +121,7 @@ export default function Biocaptcha(props: BiocaptchaProps) {
     <Card className="biocaptcha-container">
       <Typography variant="h5">bioCAPTCHA</Typography>
       <Typography variant="body1">
-        Please verify that you are a human by taking a selfie.
+        Please verify that you are a human by taking a selfie. Lean in close to the camera.
       </Typography>
       {renderWebcam()}
     </Card>
