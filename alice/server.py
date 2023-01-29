@@ -3,10 +3,12 @@ import cv2 as cv
 from PIL import Image
 import base64
 import numpy as np
+import json
 import io
 
+
 app = Flask(__name__)
-face_cascade = cv.CascadeClassifier(cv.data.haarcascades + 'haarcascade_frontalface_alt.xml')
+face_cascade = cv.CascadeClassifier(cv.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
 def stringToImage(base64_string):
     data = base64.b64decode(str(base64_string))
@@ -24,20 +26,32 @@ def hello():
     response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
     return response
 
-@app.route('/secret')
+@app.route('/secret', methods=['POST', 'OPTIONS'])
 def secret():
-    webcam_data = request.args.get('image0')
-    #print(request.args.get('image0'))
+    print("hi")
+    json_string = '['+str(request.data)[2:-1]+']'
+    print(json_string)
+    json_data = json.loads(json_string)[0]
+    webcam_data = json_data['image0']
+    print(webcam_data)
     #print(webcam_data)
-    #response = verify(webcam_data, {"secret": "You are a verified human!"})
-    response = jsonify({"secret": "You are a verified human!"})
-    response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
+    try:
+        response = verify(webcam_data, {"secret": "You are a verified human!"})
+        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
+    except Exception as e:
+        response = jsonify({"secret": "Server error: " + repr(e)})
+        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
+        response = response, 500
     return response
 
 def verify(webcam_data, secret):
+    webcam_data = webcam_data[webcam_data.rfind(',')+1:webcam_data.rfind('==')+2]
+    webcam_data = webcam_data.replace(' ', '+')
+    print(webcam_data)
     if checkWebcam(webcam_data):
         return jsonify(secret)
-    return jsonify({})
+    else:
+        return jsonify({})
 
 def verify_face(img):
   grayscale_image = cv.cvtColor(img, cv.COLOR_BGR2GRAY)

@@ -25,14 +25,21 @@ export default function Biocaptcha(props: BiocaptchaProps) {
     console.log(imageSrc);
     setImg(imageSrc);
     imagesCaptured.push(imageSrc);
-    if (imagesCaptured.length == NUM_IMAGES) {
+    if (imagesCaptured.length >= NUM_IMAGES) {
       var url = props.sendDataUrl;
-      for (let i = 0; i < imagesCaptured.length; i++) {
+      /* for (let i = 0; i < imagesCaptured.length; i++) {
         url += i == 0 ? "?" : "&";
         url += "image" + i + "=" + imagesCaptured[i];
+      } */
+      const options = {
+        method: 'POST',
+        body: JSON.stringify({image0: imagesCaptured[0], image1: imagesCaptured[1], image2: imagesCaptured[2]}),
+        /* headers: {
+          'Content-Type': 'text/plain'
+        } */
       }
       imagesCaptured = [];
-      fetch(url).then(data => data.json()).then(data => props.onDataReceived(data));
+      fetch(url, options).then(data => data.json()).then(data => props.onDataReceived(data));
       
       fetch('http://localhost:8000/hello').then(data => data.json()).then(data => console.log(data));
     }
