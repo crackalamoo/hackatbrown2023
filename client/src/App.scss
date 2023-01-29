@@ -1,0 +1,18 @@
+.app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .page {
+        .content {
+            margin: 1rem;
+            width: 50vw;
+            padding: 1.5rem;
+
+            .mui-divider {
+                margin-top: 0.5rem;
+                margin-bottom: 0.5rem;
+            }
+        }
+    }
+}

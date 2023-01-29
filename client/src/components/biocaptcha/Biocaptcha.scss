@@ -1,5 +1,32 @@
 .biocaptcha-container {
     width: 400px;
-    height: 400px;
-    background-color: coral;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 1rem;
+    margin: 1rem;
+
+    background-color: #f9f9f9;
+
+    border: 1px solid #d3d3d3;
+
+    h4 {
+        margin: 0;
+    }
+
+    .biocaptcha-webcam-container {
+        margin-bottom: 1rem;
+    }
+
+    .biocaptcha-capture-btn {
+        margin-right: 1rem;
+    }
+
+    .biocaptcha-footer {
+        .biocaptcha-footer-link {
+            color: "gray";
+        }
+    }
 }
