@@ -11,6 +11,7 @@ import time
 
 app = Flask(__name__)
 face_cascade = cv.CascadeClassifier(cv.data.haarcascades + 'haarcascade_frontalface_default.xml')
+smile_cascade = cv.CascadeClassifier(cv.data.haarcascades + 'haarcascade_smile.xml')
 
 def stringToImage(base64_string):
     data = base64.b64decode(str(base64_string))
@@ -20,7 +21,8 @@ def checkWebcam(webcam_data):
     original_image = stringToImage(webcam_data)
     grayscale_image = cv.cvtColor(np.array(original_image), cv.COLOR_BGR2GRAY)
     detected_faces = face_cascade.detectMultiScale(grayscale_image)
-    return len(detected_faces) == 1
+    detected_smiles = smile_cascade.detectMultiScale(grayscale_image)
+    return len(detected_faces) == 1 and len(detected_smiles) == 1
 
 def checkDatabase(webcam_data):
     with open("images.txt", "r") as file:
