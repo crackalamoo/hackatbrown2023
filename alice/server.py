@@ -21,7 +21,11 @@ def checkWebcam(webcam_data):
     original_image = stringToImage(webcam_data)
     grayscale_image = cv.cvtColor(np.array(original_image), cv.COLOR_BGR2GRAY)
     detected_faces = face_cascade.detectMultiScale(grayscale_image)
-    detected_smiles = smile_cascade.detectMultiScale(grayscale_image)
+    for (x, y, w, h) in detected_faces:
+        cv.rectangle(original_image, (x, y), ((x + w), (y + h)), (255, 0, 0), 2)
+        roi_gray = grayscale_image[y:y + h, x:x + w]
+        detected_smiles = smile_cascade.detectMultiScale(roi_gray, 1.8, 20)
+    
     return len(detected_faces) == 1 and len(detected_smiles) == 1
 
 def checkDatabase(webcam_data):
