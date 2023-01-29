@@ -30,11 +30,8 @@ def hello():
 def secret():
     print("hi")
     json_string = '['+str(request.data)[2:-1]+']'
-    print(json_string)
     json_data = json.loads(json_string)[0]
     webcam_data = json_data['image0']
-    print(webcam_data)
-    #print(webcam_data)
     try:
         response = verify(webcam_data, {"secret": "You are a verified human!"})
         response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
@@ -45,7 +42,7 @@ def secret():
     return response
 
 def verify(webcam_data, secret):
-    webcam_data = webcam_data[webcam_data.rfind(',')+1:webcam_data.rfind('==')+2]
+    webcam_data = webcam_data[webcam_data.rfind(',')+1:]
     webcam_data = webcam_data.replace(' ', '+')
     print(webcam_data)
     if checkWebcam(webcam_data):
