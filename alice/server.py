@@ -7,6 +7,7 @@ import numpy as np
 import json
 import io
 import time
+import random
 
 
 app = Flask(__name__)
@@ -74,6 +75,15 @@ def secret():
         response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
         response = response, 500
         print(e)
+    return response
+
+
+prompts = ["Please smile and show your face."]
+@app.route('/prompt', methods=['GET'])
+def prompt():
+    index = random.randint(0, len(prompts)-1)
+    response = jsonify(prompts[index])
+    response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
     return response
 
 def saveImage(webcam_data):

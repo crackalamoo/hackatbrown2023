@@ -23,6 +23,7 @@ interface BiocaptchaProps {
 export default function Biocaptcha(props: BiocaptchaProps) {
   //const [img, setImg] = useState<string | null>(null);
   const [webcamEnabled, setWebcamEnabled] = useState(false);
+  const [prompt, setPrompt] = useState('');
   const webcamRef = useRef<Webcam>(null);
 
   const handleImageCapture = (imageSrc: string) => {
@@ -49,10 +50,6 @@ export default function Biocaptcha(props: BiocaptchaProps) {
       fetch(url, options)
         .then((data) => data.json())
         .then((data) => props.onDataReceived(data));
-
-      fetch("http://localhost:8000/hello")
-        .then((data) => data.json())
-        .then((data) => console.log(data));
     }
   };
 
@@ -99,13 +96,18 @@ export default function Biocaptcha(props: BiocaptchaProps) {
             >
               <Typography>Take Photo!</Typography>
             </Button>
+            <br /><br />
+            <Typography variant="body1"><b>{prompt}</b></Typography>
           </Box>
         </>
       );
     } else {
       return (
         <Button
-          onClick={() => setWebcamEnabled(!webcamEnabled)}
+          onClick={() => {
+            fetch("http://localhost:8000/prompt").then((res) => res.json()).then((data) => setPrompt(data));
+            setWebcamEnabled(!webcamEnabled)
+          }}
           variant="contained"
           sx={{ marginTop: "1rem" }}
         >
