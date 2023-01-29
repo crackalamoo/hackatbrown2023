@@ -57,9 +57,23 @@ function App() {
     "\n// Eve is able to get a response with this request. However, what happens if she tries again?\n"+
     "fetch(\"http://localhost:8000/secret\", {method: 'POST', body: JSON.stringify({image0: theRockImage, image1: theRockImage, image2: theRockImage})})"+
     "\n.then((data) =>  data.json()).then((data) => console.log(data));\n\f\n"+
-    "{message: \"Since you are not verified, you can't see the secret message.\", title: 'Oh no! You are not a verified human!'}"+
+    "{message: \"Since you are not verified, you can't see the secret message.\", title: \"Oh no! You are not a verified human!\"}"+
     "\n/* Although Eve is able to get a response with this request, she is not able to get the secret message.\nThis is because the server"+
     " stored the image of the Rock in a temporary database, and checked if the images that Eve sent are the same as the images in the database. */";
+    updateTerminal();
+  }
+
+  const handleAttack3 = () => {
+    var terminal = document.getElementById("terminal");
+    if (terminal)
+      terminal.innerHTML = "";
+    terminalTyping = "// Eve is able to wait until the server has removed the image of the Rock from the database, and then try again\n"+
+      "const theRockImage = \"data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQABAAQAAAA8AAD/..."+
+      "\n// (full base64 image data not shown here)\nfetch(\"http://localhost:8000/secret\", {method: 'POST', body: JSON.stringify({image0:"+
+      " theRockImage, image1: theRockImage, image2: theRockImage})})\n.then((data) => data.json()).then((data) => console.log(data));" +
+      "\n\f\n{message: \"Since you are not verified, you can't see the secret message.\", title: \"Oh no! You are not a verified human!\"}"+
+      "\n/* Once again, Eve is not able to see the secret message. This is because we have added another layer of security: the image must be "+
+      "smiling, and the Rock is not smiling. In the future, we will add more prompts for even more security. /*";
     updateTerminal();
   }
 
@@ -135,6 +149,7 @@ function App() {
           <Tab.List>
             <Tab className={`tab-btn ${tab == 0 ? "selected": ""}`} onClick={() => setTab(0)}>Attack #1</Tab>
             <Tab className={`tab-btn ${tab == 1 ? "selected": ""}`} onClick={() => setTab(1)}>Attack #2</Tab>
+            <Tab className={`tab-btn ${tab == 2 ? "selected": ""}`} onClick={() => setTab(2)}>Attack #3</Tab>
           </Tab.List>
 
           <Tab.Panels className="tab-panels">
@@ -166,6 +181,18 @@ function App() {
                 </button>
               </div>
 
+            </Tab.Panel>
+            <Tab.Panel>
+              <h4>Attack 3 - Trying again with an image not in the temporary database</h4>
+              <div className="rock-container">
+                <div className="attack1-img-container">
+                  <img src="./attack1-2.jpg" className="attack1-img" />
+                </div>
+
+                <button className="submit-btn" onClick={handleAttack3}>
+                  Submit image!
+                </button>
+              </div>
             </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
