@@ -1,10 +1,13 @@
+$terminal-color: #28FE14;
+$hover-color: #118800;
+
 .app {
   background-color: black;
   width: 100%;
   min-height: 100vh;
   height: 100%;
 
-  color: green;
+  color: $terminal-color;
 
   .page-content {
     padding: 2rem;
@@ -13,9 +16,13 @@
         font-size: 20px;
     }
 
+    h3 {
+        margin-left: 1rem;
+    }
+
     .tab-btn {
         outline: none;
-        border: 1px green solid;
+        border: 1px $terminal-color solid;
         padding: 14px 16px;
         background-color: inherit;
         color: inherit;
@@ -25,8 +32,27 @@
         z-index: 2;
 
         &:hover {
-            background-color: #00cc00;
+            background-color: $hover-color;
         }
+    }
+    .tab-btn.selected {
+        color: white;
+    }
+
+    .tab-panels {
+        border: 1px $terminal-color solid;
+        margin-top: -1px;
+        padding: 1rem;
+    }
+
+    .rock-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .rock-container img {
+        width: 30%;
     }
 
     .attack1-img-container {
@@ -34,24 +60,24 @@
         width: 100%;
         display: flex;
         flex-direction: row;
+        justify-content: space-around;
 
         .attack1-img {
-            width: 100%;
-            height: 100%;
+            width: 30%;
             object-fit: scale-down;
         }
     }
 
     .submit-btn {
         margin: 2rem;
-        border: 1px solid green;
+        border: 1px solid $terminal-color;
         background-color: inherit;
         color: inherit;
         padding: 0.5rem;
         cursor: pointer;
 
         &:hover {
-            background-color: #00cc00;
+            background-color: $hover-color;
         }
     }
   }

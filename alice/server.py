@@ -6,6 +6,7 @@ import base64
 import numpy as np
 import json
 import io
+import time
 
 
 app = Flask(__name__)
@@ -20,6 +21,14 @@ def checkWebcam(webcam_data):
     grayscale_image = cv.cvtColor(np.array(original_image), cv.COLOR_BGR2GRAY)
     detected_faces = face_cascade.detectMultiScale(grayscale_image)
     return len(detected_faces) == 1
+
+def checkDatabase(webcam_data):
+    with open("images.txt", "r") as file:
+        text = file.read().split('\n')
+    for i in range(len(text)):
+        if webcam_data == text[i].split(' ')[0]:
+            return False
+    return True
 
 def verifySimilarity(images_lst):
     webcam_images = map(stringToImage, images_lst)
@@ -41,19 +50,16 @@ def hello():
 
 @app.route('/secret', methods=['POST', 'OPTIONS'])
 def secret():
-    print("hi")
     json_string = '['+str(request.data)[2:-1]+']'
-    print(json_string)
     json_data = json.loads(json_string)[0]
     webcam_data = json_data['image0']
-    print(webcam_data)
-    #print(webcam_data)
     try:
         response = verify(webcam_data,
             {   "title": "Congratulations! You Are Not a Robot!",
                 "message": "You are a verified human! Now you get to see the secret message. Here it is: \"I love Hack at Brown!\""},
             {   "title": "Oh no! You are not a verified human!",
-                "message": "Since you are not verified, you can't see the secret message."})
+                "message": "Since you are not verified, you can't see the secret message."},
+            saveValidImage=True)
         response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
     except Exception as e:
         response = jsonify({
@@ -61,13 +67,31 @@ def secret():
             "message": "Server error: " + repr(e)})
         response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
         response = response, 500
+        print(e)
     return response
 
-def verify(webcam_data, secret, onRobot={}):
+def saveImage(webcam_data):
+    with open("images.txt", "r") as file:
+        text = file.read().split('\n')
+    with open("images.txt", "w") as file:
+        for i in range(len(text)-1, -1, -1):
+            img_time = text[i].split(' ')
+            if len(img_time) != 2 or time.time() - float(text[i].split(' ')[1]) > 15:
+                text.pop(i)
+        file.write('\n'.join(text))
+        file.write(webcam_data + ' ' + str(time.time()) + '\n')
+
+def verify(webcam_data, secret, onRobot={}, saveValidImage=False):
     webcam_data = webcam_data[webcam_data.rfind(',')+1:]
     webcam_data = webcam_data.replace(' ', '+')
-    print(webcam_data)
     if checkWebcam(webcam_data):
+        if not checkDatabase(webcam_data):
+            print("Not verified!!!")
+            if saveValidImage:
+                saveImage(webcam_data)
+            return jsonify(onRobot)
+        if saveValidImage:
+            saveImage(webcam_data)
         return jsonify(secret)
     else:
         return jsonify(onRobot)

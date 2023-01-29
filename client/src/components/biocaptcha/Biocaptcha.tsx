@@ -21,13 +21,12 @@ interface BiocaptchaProps {
 }
 
 export default function Biocaptcha(props: BiocaptchaProps) {
-  const [img, setImg] = useState<string | null>(null);
+  //const [img, setImg] = useState<string | null>(null);
   const [webcamEnabled, setWebcamEnabled] = useState(false);
   const webcamRef = useRef<Webcam>(null);
 
   const handleImageCapture = (imageSrc: string) => {
-    console.log(imageSrc);
-    setImg(imageSrc);
+    //setImg(imageSrc);
     imagesCaptured.push(imageSrc);
     if (imagesCaptured.length >= NUM_IMAGES) {
       var url = props.sendDataUrl;
