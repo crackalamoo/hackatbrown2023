@@ -73,7 +73,7 @@ function App() {
       " theRockImage, image1: theRockImage, image2: theRockImage})})\n.then((data) => data.json()).then((data) => console.log(data));" +
       "\n\f\n{message: \"Since you are not verified, you can't see the secret message.\", title: \"Oh no! You are not a verified human!\"}"+
       "\n/* Once again, Eve is not able to see the secret message. This is because we have added another layer of security: the image must be "+
-      "smiling, and the Rock is not smiling. In the future, we will add more prompts for even more security. /*";
+      "smiling, and the Rock is not smiling. In the future, we will add more prompts for even more security. */";
     updateTerminal();
   }
 
