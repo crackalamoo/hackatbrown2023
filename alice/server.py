@@ -25,7 +25,8 @@ def checkWebcam(webcam_data):
         cv.rectangle(np.array(original_image), (x, y), ((x + w), (y + h)), (255, 0, 0), 2)
         roi_gray = grayscale_image[y:y + h, x:x + w]
         detected_smiles = smile_cascade.detectMultiScale(roi_gray, 1.5, 10)
-    return len(detected_faces) == 1 and len(detected_smiles) == 1
+    if len(detected_faces) == 0: return False
+    return len(detected_faces) == 1 and len(detected_smiles) >= 1
 
 def checkDatabase(webcam_data):
     with open("images.txt", "r") as file:
