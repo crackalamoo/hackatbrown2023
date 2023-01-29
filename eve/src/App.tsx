@@ -36,9 +36,6 @@ function App() {
               "http://localhost:3001/attack1-3.jpg",
               function (dataUrl: string) {
                 url3 = dataUrl;
-                console.log(url1);
-                console.log(url2);
-                console.log(url3);
 
                 submitImages([url1, url2, url3]);
               }
@@ -48,6 +45,23 @@ function App() {
       }
     );
   };
+
+  const handleAttack2 = () => {
+    var terminal = document.getElementById("terminal");
+    if (terminal)
+      terminal.innerHTML = "";
+    terminalTyping = "const theRockImage = \"data:image/jpeg;base64,/9j/4QAYRXhpZgAASUkqAAgAAAAAAAAAAAAAAP/sABFEdWNreQABAAQAAAA8AAD/..."+
+    "\n// (full base64 image data not shown here)\nfetch(\"http://localhost:8000/secret\", {method: 'POST', body: JSON.stringify({image0:"+
+    " theRockImage, image1: theRockImage, image2: theRockImage})})\n.then((data) => data.json()).then((data) => console.log(data));" +
+    "\n\f\n{message: 'You are a verified human! Now you get to see the secret message. Here it is: \"I love Hack at Brown!\"', title: 'Congratulations! You Are Not a Robot!'}"+
+    "\n// Eve is able to get a response with this request. However, what happens if she tries again?\n"+
+    "fetch(\"http://localhost:8000/secret\", {method: 'POST', body: JSON.stringify({image0: theRockImage, image1: theRockImage, image2: theRockImage})})"+
+    "\n.then((data) =>  data.json()).then((data) => console.log(data));\n\f\n"+
+    "{message: \"Since you are not verified, you can't see the secret message.\", title: 'Oh no! You are not a verified human!'}"+
+    "\n/* Although Eve is able to get a response with this request, she is not able to get the secret message.\nThis is because the server"+
+    " stored the image of the Rock in a temporary database, and checked if the images that Eve sent are the same as the images in the database. */";
+    updateTerminal();
+  }
 
   const [tab, setTab] = React.useState(0);
 
@@ -102,7 +116,7 @@ function App() {
           terminal.innerHTML = renderText(terminalTyping.slice(0, i + 1));
       }, 25 * delay);
       if (terminalTyping[i] === "\f") delay += 10;
-      delay++;
+      delay += 0.7 + Math.random() * 0.6;
     }
   }
 
@@ -141,7 +155,18 @@ function App() {
               </div>
             </Tab.Panel>
             <Tab.Panel>
-              <h4>Attack 2 - Using inspect element to send malicious requests through Alice's website</h4></Tab.Panel>
+              <h4>Attack 2 - Using inspect element to send malicious JavaScript injections through Alice's website</h4>
+              <div className="rock-container">
+                <div className="attack1-img-container">
+                  <img src="./attack1-2.jpg" className="attack1-img" />
+                </div>
+
+                <button className="submit-btn" onClick={handleAttack2}>
+                  Submit image!
+                </button>
+              </div>
+
+            </Tab.Panel>
           </Tab.Panels>
         </Tab.Group>
         <br />
